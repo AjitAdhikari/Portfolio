@@ -1,76 +1,40 @@
 import { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
-import { photographerInfo } from '@/data/photographer';
+import { developerInfo } from '@/data/developer';
 
 interface SEOHeadProps {
   title?: string;
   description?: string;
-  image?: string;
-  type?: 'website' | 'article';
 }
 
-/**
- * SEO component for managing page meta tags
- * Handles title, description, and Open Graph tags
- */
-export function SEOHead({ 
-  title, 
-  description, 
-  // Photo by Oyemike Princewill on Unsplash
-  image = 'https://images.unsplash.com/photo-1662333085102-f6ae3be21c91?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3MDA2OTF8MHwxfHJhbmRvbXx8fHx8fHx8fDE3NjI3Njk1NjB8&ixlib=rb-4.1.0&q=80&w=1080',
-  type = 'website'
-}: SEOHeadProps) {
-  const location = useLocation();
-  
-  const fullTitle = title 
-    ? `${title} | ${photographerInfo.name}` 
-    : `${photographerInfo.name} - ${photographerInfo.tagline}`;
-  
-  const defaultDescription = photographerInfo.heroIntroduction;
-  const fullDescription = description || defaultDescription;
-  
-  const baseUrl = window.location.origin;
-  const fullUrl = `${baseUrl}${location.pathname}`;
+export function SEOHead({ title, description }: SEOHeadProps) {
+  const fullTitle = title
+    ? `${title} | ${developerInfo.name}`
+    : `${developerInfo.name} - Software Developer from Nepal`;
+
+  const fullDescription = description || developerInfo.bio;
 
   useEffect(() => {
-    // Update document title
     document.title = fullTitle;
-
-    // Update or create meta tags
-    const updateMetaTag = (name: string, content: string, isProperty = false) => {
-      const attribute = isProperty ? 'property' : 'name';
-      let element = document.querySelector(`meta[${attribute}="${name}"]`);
-      
-      if (!element) {
-        element = document.createElement('meta');
-        element.setAttribute(attribute, name);
-        document.head.appendChild(element);
+    const updateMeta = (name: string, content: string, isProp = false) => {
+      const attr = isProp ? 'property' : 'name';
+      let el = document.querySelector(`meta[${attr}="${name}"]`);
+      if (!el) {
+        el = document.createElement('meta');
+        el.setAttribute(attr, name);
+        document.head.appendChild(el);
       }
-      
-      element.setAttribute('content', content);
+      el.setAttribute('content', content);
     };
-
-    // Standard meta tags
-    updateMetaTag('description', fullDescription);
-    
-    // Open Graph tags
-    updateMetaTag('og:title', fullTitle, true);
-    updateMetaTag('og:description', fullDescription, true);
-    updateMetaTag('og:type', type, true);
-    updateMetaTag('og:url', fullUrl, true);
-    updateMetaTag('og:image', image, true);
-    updateMetaTag('og:site_name', photographerInfo.name, true);
-    
-    // Twitter Card tags
-    updateMetaTag('twitter:card', 'summary_large_image');
-    updateMetaTag('twitter:title', fullTitle);
-    updateMetaTag('twitter:description', fullDescription);
-    updateMetaTag('twitter:image', image);
-
-    // Additional SEO tags
-    updateMetaTag('author', photographerInfo.name);
-    updateMetaTag('keywords', `photography, ${photographerInfo.name}, professional photographer, ${photographerInfo.tagline}`);
-  }, [fullTitle, fullDescription, fullUrl, image, type]);
+    updateMeta('description', fullDescription);
+    updateMeta('og:title', fullTitle, true);
+    updateMeta('og:description', fullDescription, true);
+    updateMeta('og:type', 'website', true);
+    updateMeta('twitter:card', 'summary_large_image');
+    updateMeta('twitter:title', fullTitle);
+    updateMeta('twitter:description', fullDescription);
+    updateMeta('author', developerInfo.name);
+    updateMeta('keywords', 'Ajit Adhikari, Software Developer, Nepal, React, Full Stack, Portfolio');
+  }, [fullTitle, fullDescription]);
 
   return null;
 }
